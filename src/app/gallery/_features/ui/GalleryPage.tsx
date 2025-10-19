@@ -30,7 +30,7 @@ export function GalleryPage({ tierlists }: GalleryPageProps) {
             전체 <b>{tierlists.length}</b>개
           </div>
           <div className={statItemStyle}>
-            총 조회수 <b>{tierlists.reduce((sum, t) => sum + t.viewCount, 0).toLocaleString()}</b>
+            총 조회수 <b>{tierlists.reduce((sum, t) => sum + t.viewCount, 0).toLocaleString('ko-KR')}</b>
           </div>
         </div>
 
@@ -55,7 +55,7 @@ export function GalleryPage({ tierlists }: GalleryPageProps) {
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                       <circle cx="12" cy="12" r="3"></circle>
                     </svg>
-                    {tierlist.viewCount.toLocaleString()}
+                    {tierlist.viewCount.toLocaleString('ko-KR')}
                   </div>
                 </div>
               </div>
@@ -69,7 +69,7 @@ export function GalleryPage({ tierlists }: GalleryPageProps) {
                   <span className={authorStyle}>@{tierlist.userId}</span>
                   <span className={dotStyle}>·</span>
                   <span className={dateStyle}>
-                    {tierlist.createdAt.toLocaleDateString()}
+                    {tierlist.createdAt.toLocaleDateString('ko-KR')}
                   </span>
                   <span className={dotStyle}>·</span>
                   <span className={animeCountStyle}>
