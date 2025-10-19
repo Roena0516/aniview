@@ -1,7 +1,7 @@
 'use client';
 
 import { css } from '@emotion/css';
-import { mockProfile } from '../../../../../../shared/model/profile';
+import { mockProfile } from '../model/profile';
 
 interface ProfileHeaderProps {
   userId: string;

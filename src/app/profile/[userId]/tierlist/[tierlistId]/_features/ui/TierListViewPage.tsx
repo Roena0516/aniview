@@ -3,6 +3,7 @@
 import { css } from '@emotion/css';
 import { TierListData } from '../../_entities/model/types';
 import { Header } from '../../../../../../../shared/components/Header';
+import { ProfileHeader } from '../../../../../../../shared/components/ProfileHeader';
 
 interface TierListViewPageProps {
   tierList: TierListData;
@@ -29,9 +30,9 @@ export function TierListViewPage({ tierList }: TierListViewPageProps) {
   return (
     <>
       <Header />
+      <ProfileHeader userId={tierList.userId} />
 
       <div className={containerStyle}>
-        <div className={spacerStyle} />
 
         <div className={headerSectionStyle}>
           <div className={titleSectionStyle}>
@@ -114,11 +115,6 @@ const containerStyle = css`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
-`;
-
-const spacerStyle = css`
-  display: block;
-  height: 60px;
 `;
 
 const spacerMediumStyle = css`
