@@ -46,11 +46,11 @@ export function TierListViewPage({ tierList }: TierListViewPageProps) {
               </span>
               <span className={metaDividerStyle}>·</span>
               <span className={metaItemStyle}>
-                조회수: <b>{tierList.viewCount.toLocaleString()}</b>
+                조회수: <b>{tierList.viewCount.toLocaleString('ko-KR')}</b>
               </span>
               <span className={metaDividerStyle}>·</span>
               <span className={metaItemStyle}>
-                작성일: <b>{tierList.createdAt.toLocaleDateString()}</b>
+                작성일: <b>{tierList.createdAt.toLocaleDateString('ko-KR')}</b>
               </span>
             </div>
           </div>

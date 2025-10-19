@@ -202,7 +202,6 @@ const viewButtonStyle = css`
   background: #f7f8f9;
   color: #000000;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 
@@ -231,7 +230,6 @@ const saveButtonStyle = css`
   background: #000000;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -259,7 +257,6 @@ const clearButtonStyle = css`
   background: #f7f8f9;
   color: #000000;
   border: none;
-  border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -294,7 +291,7 @@ const tierListContainerStyle = css`
 const tierListStyle = css`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
 `;
 
 const searchPanelContainerStyle = css`

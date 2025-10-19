@@ -88,10 +88,13 @@ export function TierRow({ tier, animes, onDrop, onRemove }: TierRowProps) {
 const containerStyle = css`
   display: flex;
   width: 100%;
-  border: 1px solid #dddfe0;
+  border-bottom: 1px solid #dddfe0;
   background: #ffffff;
-  border-radius: 4px;
   overflow: hidden;
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 const tierLabelStyle = (tier: TierLevel) => css`
@@ -144,7 +147,6 @@ const removeButtonStyle = css`
   right: -8px;
   width: 24px;
   height: 24px;
-  border-radius: 50%;
   background: #000000;
   color: #ffffff;
   border: 2px solid #ffffff;
@@ -167,7 +169,6 @@ const thumbnailStyle = css`
   width: 80px;
   height: 107px;
   object-fit: cover;
-  border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
