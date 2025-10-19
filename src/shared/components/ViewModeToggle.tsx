@@ -73,17 +73,10 @@ const viewButtonStyle = css`
   color: #000000;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
     background: #dadfe3;
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 4px 8px;
-    transform: translate(0, -4px);
-  }
-
-  &:active {
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 2px 4px;
-    transform: translate(0, -2px);
   }
 
   svg {
@@ -103,7 +96,7 @@ const viewButtonActiveStyle = css`
   color: #ffffff;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
     background: #2a2a2a;
