@@ -81,7 +81,7 @@ export function ProfileHeader({ userId }: ProfileHeaderProps) {
       <div className={spacerMediumStyle} />
 
       <nav className={navButtonsContainerStyle}>
-        <a href={`/profile/${userId}/tierlist`} className={navButtonStyle}>
+        <a href={`/profile/${userId}/tierlist`} className={navButtonActiveStyle}>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="8" y1="6" x2="21" y2="6"></line>
             <line x1="8" y1="12" x2="21" y2="12"></line>
@@ -359,6 +359,34 @@ const navButtonStyle = css`
   justify-content: center;
   gap: 8px;
   padding: 12px;
+  background: transparent;
+  color: #000000;
+  border: none;
+  border-radius: 4px;
+  font-size: 75%;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    background: #f7f8f9;
+    text-decoration: none;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const navButtonActiveStyle = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
   background: #f7f8f9;
   color: #000000;
   border: none;
@@ -371,14 +399,7 @@ const navButtonStyle = css`
 
   &:hover {
     background: #dadfe3;
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 4px 8px;
-    transform: translate(0, -4px);
     text-decoration: none;
-  }
-
-  &:active {
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 2px 4px;
-    transform: translate(0, -2px);
   }
 
   svg {
