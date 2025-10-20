@@ -9,10 +9,11 @@ import type { Profile } from '../model/database';
 
 interface ProfileHeaderProps {
   userId: string;
-  activePage?: 'tierlist' | 'create' | 'settings';
+  activePage?: 'tierlist' | 'create' | 'settings' | 'gallery' | 'photo';
+  tierlistId?: string;
 }
 
-export function ProfileHeader({ userId, activePage = 'tierlist' }: ProfileHeaderProps) {
+export function ProfileHeader({ userId, activePage = 'tierlist', tierlistId }: ProfileHeaderProps) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -143,7 +144,7 @@ export function ProfileHeader({ userId, activePage = 'tierlist' }: ProfileHeader
 
       <div className={spacerMediumStyle} />
 
-      <nav className={navButtonsContainerStyle}>
+      <nav className={tierlistId ? navButtonsContainerStyleWithPhoto : navButtonsContainerStyle}>
         <a
           href={`/profile/${userId}/tierlist`}
           className={activePage === 'tierlist' ? navButtonActiveStyle : navButtonStyle}
@@ -168,6 +169,19 @@ export function ProfileHeader({ userId, activePage = 'tierlist' }: ProfileHeader
           </svg>
           <span>티어표 생성</span>
         </a>
+        {tierlistId && (
+          <a
+            href={`/profile/${userId}/tierlist/${tierlistId}/photo`}
+            className={activePage === 'photo' ? navButtonActiveStyle : navButtonStyle}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <span>사진관</span>
+          </a>
+        )}
         <a
           href={`/profile/${userId}/settings`}
           className={activePage === 'settings' ? navButtonActiveStyle : navButtonStyle}
@@ -424,6 +438,20 @@ const navButtonsContainerStyle = css`
 
   @media (max-width: 640px) {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const navButtonsContainerStyleWithPhoto = css`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @media (max-width: 480px) {

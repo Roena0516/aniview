@@ -68,7 +68,10 @@ export function TierListViewPage({ tierList }: TierListViewPageProps) {
   return (
     <>
       <Header />
-      <ProfileHeader userId={tierList.userId} />
+      <ProfileHeader
+        userId={tierList.userId}
+        tierlistId={tierList.id}
+      />
 
       <div className={containerStyle}>
 
