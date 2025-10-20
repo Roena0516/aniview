@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { TierListGalleryPage } from './_features/ui/TierListGalleryPage';
-import { mockTierLists } from './_entities/model/mockData';
+import { createClient } from '../../../../shared/lib/supabase/server';
 
 interface TierListPageProps {
   params: Promise<{
@@ -10,11 +10,30 @@ interface TierListPageProps {
 
 const TierListPage: NextPage<TierListPageProps> = async ({ params }) => {
   const { userId } = await params;
+  const supabase = await createClient();
 
-  // TODO: 실제로는 API에서 해당 userId의 티어리스트를 가져와야 함
-  const userTierLists = mockTierLists.filter((list) => list.userId === userId);
+  const { data: tierlists, error } = await supabase
+    .from('tierlists')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
 
-  return <TierListGalleryPage userId={userId} tierLists={userTierLists} />;
+  if (error) {
+    console.error('Error fetching tierlists:', error);
+  }
+
+  const tierListSummaries = (tierlists || []).map((tierlist) => ({
+    id: tierlist.id,
+    userId: tierlist.user_id,
+    title: tierlist.title,
+    description: tierlist.description,
+    thumbnail: tierlist.thumbnail,
+    viewCount: tierlist.view_count,
+    createdAt: new Date(tierlist.created_at),
+    updatedAt: new Date(tierlist.updated_at),
+  }));
+
+  return <TierListGalleryPage userId={userId} tierLists={tierListSummaries} />;
 };
 
 export default TierListPage;

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { css } from '@emotion/css';
 import { TierLevel, Anime, TierListItem } from '../../_entities/model/types';
 import { mockAnimeList } from '../../_entities/model/mockData';
@@ -8,6 +9,7 @@ import { TierRow } from './TierRow';
 import { AnimeSearchPanel } from './AnimeSearchPanel';
 import { Header } from '../../../../../../shared/components/Header';
 import { ProfileHeader } from './ProfileHeader';
+import { tierlistsApi } from '../../../../../../shared/api/tierlists';
 
 const initialTiers: TierLevel[] = ['SSS', 'SS', 'S', 'A', 'B', 'C'];
 
@@ -19,6 +21,8 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
   const [tierListItems, setTierListItems] = useState<TierListItem[]>(
     initialTiers.map((tier) => ({ tier, animes: [] }))
   );
+  const [saving, setSaving] = useState(false);
+  const router = useRouter();
 
   const usedAnimeIds = new Set(
     tierListItems.flatMap((item) => item.animes.map((anime) => anime.id))
@@ -57,23 +61,31 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
     }
   };
 
-  const handleSave = () => {
-    // TODO: 실제로는 API로 저장해야 함
-    const tierlistId = `tierlist-${Date.now()}`;
-    const url = `/profile/${userId}/tierlist/${tierlistId}`;
+  const handleSave = async () => {
+    if (!window.confirm('티어표를 저장하시겠습니까?')) {
+      return;
+    }
 
-    if (window.confirm('티어표를 저장하시겠습니까?')) {
-      // 임시로 데이터를 localStorage에 저장
-      const tierListData = {
-        id: tierlistId,
-        userId,
+    setSaving(true);
+
+    try {
+      const tierlist = await tierlistsApi.createTierlist({
+        user_id: userId,
         title: '나의 애니메이션 티어표',
+        description: null,
         tiers: tierListItems,
-        createdAt: new Date().toISOString(),
-      };
+      });
 
-      localStorage.setItem(`tierlist-${tierlistId}`, JSON.stringify(tierListData));
-      window.location.href = url;
+      if (tierlist) {
+        router.push(`/profile/${userId}/tierlist/${tierlist.id}`);
+      } else {
+        alert('티어표 저장에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error saving tierlist:', error);
+      alert('티어표 저장 중 오류가 발생했습니다.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -86,13 +98,13 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
         <div className={sectionHeaderStyle}>
           <h2 className={sectionTitleStyle}>애니메이션 티어표</h2>
           <div className={sectionActionsStyle}>
-            <button className={saveButtonStyle} onClick={handleSave}>
+            <button className={saveButtonStyle} onClick={handleSave} disabled={saving}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                 <polyline points="17 21 17 13 7 13 7 21"></polyline>
                 <polyline points="7 3 7 8 15 8"></polyline>
               </svg>
-              저장하기
+              {saving ? '저장 중...' : '저장하기'}
             </button>
             <button className={clearButtonStyle} onClick={handleClear}>
               전체 초기화

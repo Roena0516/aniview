@@ -1,23 +1,41 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { css } from '@emotion/css';
 import { mockProfile } from '../model/profile';
 import { createClient } from '../lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { profilesApi } from '../api/profiles';
+import type { Profile } from '../model/database';
 
 interface ProfileHeaderProps {
   userId: string;
 }
 
 export function ProfileHeader({ userId }: ProfileHeaderProps) {
-  const profile = { ...mockProfile, username: userId };
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const data = await profilesApi.getProfile(userId);
+      setProfile(data);
+      setLoading(false);
+    };
+
+    fetchProfile();
+  }, [userId]);
 
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
     router.push('/login');
   };
+
+  if (loading || !profile) {
+    return <div className={containerStyle}>Loading...</div>;
+  }
 
   return (
     <div className={containerStyle}>
@@ -49,18 +67,18 @@ export function ProfileHeader({ userId }: ProfileHeaderProps) {
       <div className={spacerSmallStyle} />
 
       <div className={profileContentStyle}>
-        <img src={profile.avatar} alt={profile.displayName} className={avatarStyle} />
+        <img src={profile.avatar_url || '/default-avatar.png'} alt={profile.display_name} className={avatarStyle} />
 
         <div className={profileInfoStyle}>
           <div className={profileTopStyle}>
-            {profile.favoriteAnime && (
-              <div className={favoriteBadgeStyle}>{profile.favoriteAnime}</div>
+            {profile.favorite_anime && (
+              <div className={favoriteBadgeStyle}>{profile.favorite_anime}</div>
             )}
           </div>
 
           <div className={profileNameRowStyle}>
             <h1 className={displayNameStyle}>
-              {profile.displayName.split('').map((char, i) => (
+              {profile.display_name.split('').map((char, i) => (
                 <span key={i} className={charStyle}>{char}</span>
               ))}
             </h1>
@@ -78,12 +96,12 @@ export function ProfileHeader({ userId }: ProfileHeaderProps) {
       <div className={statsRowStyle}>
         <div className={statItemStyle}>
           <div className={statLabelStyle}>티어표 개수</div>
-          <div className={statValueStyle}>{profile.tierListCount}</div>
+          <div className={statValueStyle}>{profile.tier_list_count}</div>
         </div>
         <div className={dividerStyle} />
         <div className={statItemStyle}>
           <div className={statLabelStyle}>레이팅</div>
-          <div className={statValueStyle}>{profile.rating.toLocaleString()}</div>
+          <div className={statValueStyle}>{profile.rating.toLocaleString('ko-KR')}</div>
         </div>
       </div>
 
