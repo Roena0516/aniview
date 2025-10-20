@@ -82,11 +82,21 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
     setSaving(true);
 
     try {
+      // 첫 번째 애니메이션의 썸네일을 티어표 썸네일로 사용
+      let thumbnail = null;
+      for (const item of tierListItems) {
+        if (item.animes.length > 0) {
+          thumbnail = item.animes[0].thumbnail;
+          break;
+        }
+      }
+
       const tierlist = await tierlistsApi.createTierlist({
         user_id: user.id,
         title: title.trim(),
         description: null,
         tiers: tierListItems,
+        thumbnail,
       });
 
       if (tierlist) {

@@ -1,9 +1,13 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { css } from '@emotion/css';
 import { TierListData } from '../../_entities/model/types';
 import { Header } from '../../../../../../../shared/components/Header';
 import { ProfileHeader } from '../../../../../../../shared/components/ProfileHeader';
+import { useUser } from '../../../../../../../shared/hooks/useUser';
+import { tierlistsApi } from '../../../../../../../shared/api/tierlists';
 
 interface TierListViewPageProps {
   tierList: TierListData;
@@ -21,10 +25,44 @@ const tierColors: Record<string, string> = {
 };
 
 export function TierListViewPage({ tierList }: TierListViewPageProps) {
+  const { user } = useUser();
+  const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const isOwner = user?.id === tierList.userId;
+
   const handleShare = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url);
     alert('링크가 복사되었습니다!');
+  };
+
+  const handleEdit = () => {
+    router.push(`/profile/${tierList.userId}/create?edit=${tierList.id}`);
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('정말로 이 티어표를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      const success = await tierlistsApi.deleteTierlist(tierList.id);
+
+      if (success) {
+        alert('티어표가 삭제되었습니다.');
+        router.push(`/profile/${tierList.userId}/tierlist`);
+      } else {
+        alert('티어표 삭제 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('Error deleting tierlist:', error);
+      alert('티어표 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (

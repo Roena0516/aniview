@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   display_name TEXT NOT NULL,
   username TEXT UNIQUE,
   avatar_url TEXT,
-  favorite_anime TEXT,
+  favorite_anime TEXT DEFAULT '신입',
   rating INTEGER DEFAULT 0,
   tier_list_count INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -152,12 +152,13 @@ CREATE TRIGGER decrement_tier_list_count_trigger
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, display_name, avatar_url, username)
+  INSERT INTO public.profiles (id, display_name, avatar_url, username, favorite_anime)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.email),
     NEW.raw_user_meta_data->>'avatar_url',
-    SPLIT_PART(NEW.email, '@', 1)
+    SPLIT_PART(NEW.email, '@', 1),
+    '신입'
   );
   RETURN NEW;
 END;
