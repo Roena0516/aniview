@@ -66,7 +66,7 @@ export function ProfileHeader({ userId, activePage = 'tierlist' }: ProfileHeader
             </svg>
           </div>
         </a>
-        <a href={`/profile/${userId}/create`} className={urlLinkStyle}>
+        <a href={`/profile/${userId}/tierlist`} className={urlLinkStyle}>
           <span className={urlPrefixStyle}>aniview.com/</span>
           <b>{userId}</b>
         </a>
