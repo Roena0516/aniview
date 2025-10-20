@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { css } from '@emotion/css';
 import { mockProfile } from '../model/profile';
 import { createClient } from '../lib/supabase/client';
-import { useRouter } from 'next/navigation';
 import { profilesApi } from '../api/profiles';
 import type { Profile } from '../model/database';
 
@@ -16,7 +15,6 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ userId, activePage = 'tierlist' }: ProfileHeaderProps) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -51,12 +49,6 @@ export function ProfileHeader({ userId, activePage = 'tierlist' }: ProfileHeader
 
     fetchProfile();
   }, [userId]);
-
-  const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/login');
-  };
 
   if (loading || !profile) {
     return <div className={containerStyle}>Loading...</div>;
@@ -157,13 +149,6 @@ export function ProfileHeader({ userId, activePage = 'tierlist' }: ProfileHeader
           </svg>
           <span>티어표 생성</span>
         </a>
-        <button onClick={handleLogout} className={navButtonStyle}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-2"></path>
-            <path d="M9 12h12l-3-3m0 6l3-3"></path>
-          </svg>
-          <span>로그아웃</span>
-        </button>
       </nav>
 
       <div className={spacerSmallStyle} />
@@ -405,11 +390,11 @@ const dividerStyle = css`
 
 const navButtonsContainerStyle = css`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 
   @media (max-width: 640px) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @media (max-width: 480px) {

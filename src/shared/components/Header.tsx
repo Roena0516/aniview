@@ -1,23 +1,38 @@
-'use client';
+"use client";
 
-import { css } from '@emotion/css';
-import { useUser } from '../hooks/useUser';
+import { css } from "@emotion/css";
+import { useRouter } from "next/navigation";
+import { useUser } from "../hooks/useUser";
+import { createClient } from "../lib/supabase/client";
 
 export function Header() {
   const { user } = useUser();
+  const router = useRouter();
 
-  const profileHref = user ? `/profile/${user.id}/create` : '/login';
+  const profileHref = user ? `/profile/${user.id}/tierlist` : "/login";
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/login');
+  };
 
   return (
     <header className={headerStyle}>
       <div className={containerStyle}>
         <div className={navStyle}>
-          <a
-            role="button"
-            href="/gallery"
-            className={iconButtonStyle}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <a role="button" href="/gallery" className={iconButtonStyle}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <rect x="3" y="3" width="7" height="7"></rect>
               <rect x="14" y="3" width="7" height="7"></rect>
               <rect x="14" y="14" width="7" height="7"></rect>
@@ -26,16 +41,30 @@ export function Header() {
           </a>
         </div>
         <div className={navStyle}>
-          <a
-            role="button"
-            href={profileHref}
-            className={iconButtonStyle}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <a role="button" href={profileHref} className={iconButtonStyle}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
               <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
             </svg>
           </a>
+          {user && (
+            <button onClick={handleLogout} className={iconButtonStyle}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-2"></path>
+                <path d="M9 12h12l-3-3m0 6l3-3"></path>
+              </svg>
+            </button>
+          )}
         </div>
       </div>
     </header>
@@ -63,7 +92,7 @@ const containerStyle = css`
 const navStyle = css`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0;
 `;
 
 const iconButtonStyle = css`
@@ -75,7 +104,9 @@ const iconButtonStyle = css`
   justify-content: center;
   background: rgba(247, 248, 249, 0);
   color: #000000;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
   border-radius: 9999px;
   width: 48px;
   height: 48px;
