@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { css } from '@emotion/css';
-import { TierLevel, Anime, TierListItem } from '../../_entities/model/types';
-import { mockAnimeList } from '../../_entities/model/mockData';
-import { TierRow } from './TierRow';
-import { AnimeSearchPanel } from './AnimeSearchPanel';
-import { Header } from '../../../../shared/components/Header';
-import { ProfileHeader } from './ProfileHeader';
+import { useState } from "react";
+import { css } from "@emotion/css";
+import { TierLevel, Anime, TierListItem } from "../../_entities/model/types";
+import { mockAnimeList } from "../../_entities/model/mockData";
+import { TierRow } from "./TierRow";
+import { AnimeSearchPanel } from "./AnimeSearchPanel";
+import { Header } from "../../../../shared/components/Header";
+import { ProfileHeader } from "./ProfileHeader";
 
-const initialTiers: TierLevel[] = ['SSS', 'SS', 'S', 'A', 'B', 'C', 'D', 'E'];
+const initialTiers: TierLevel[] = ["SSS", "SS", "S", "A", "B", "C"];
 
 export function CreatePageView() {
   const [tierListItems, setTierListItems] = useState<TierListItem[]>(
@@ -48,7 +48,7 @@ export function CreatePageView() {
   };
 
   const handleClear = () => {
-    if (window.confirm('모든 티어를 초기화하시겠습니까?')) {
+    if (window.confirm("모든 티어를 초기화하시겠습니까?")) {
       setTierListItems(initialTiers.map((tier) => ({ tier, animes: [] })));
     }
   };
@@ -62,33 +62,6 @@ export function CreatePageView() {
         <div className={sectionHeaderStyle}>
           <h2 className={sectionTitleStyle}>애니메이션 티어표</h2>
           <div className={sectionActionsStyle}>
-            <div className={viewToggleStyle}>
-              <button className={viewButtonStyle}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="14" width="7" height="7"></rect>
-                  <rect x="3" y="14" width="7" height="7"></rect>
-                </svg>
-              </button>
-              <button className={viewButtonStyle}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="8" y1="6" x2="21" y2="6"></line>
-                  <line x1="8" y1="12" x2="21" y2="12"></line>
-                  <line x1="8" y1="18" x2="21" y2="18"></line>
-                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                </svg>
-              </button>
-              <button className={viewButtonStyle}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="3" y1="12" x2="21" y2="12"></line>
-                  <line x1="3" y1="6" x2="21" y2="6"></line>
-                  <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-              </button>
-            </div>
             <button className={clearButtonStyle} onClick={handleClear}>
               전체 초기화
             </button>
@@ -111,7 +84,10 @@ export function CreatePageView() {
           </div>
 
           <div className={searchPanelContainerStyle}>
-            <AnimeSearchPanel animes={mockAnimeList} usedAnimeIds={usedAnimeIds} />
+            <AnimeSearchPanel
+              animes={mockAnimeList}
+              usedAnimeIds={usedAnimeIds}
+            />
           </div>
         </div>
       </div>
@@ -155,62 +131,18 @@ const sectionActionsStyle = css`
   gap: 8px;
 `;
 
-const viewToggleStyle = css`
-  display: flex;
-  gap: 8px;
-`;
-
-const viewButtonStyle = css`
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: #f7f8f9;
-  color: #000000;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    background: #dadfe3;
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 4px 8px;
-    transform: translate(0, -4px);
-  }
-
-  &:active {
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 2px 4px;
-    transform: translate(0, -2px);
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-  }
-`;
-
 const clearButtonStyle = css`
   padding: 12px 16px;
   background: #f7f8f9;
   color: #000000;
   border: none;
-  border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
     background: #dadfe3;
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 4px 8px;
-    transform: translate(0, -4px);
-  }
-
-  &:active {
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 2px 4px;
-    transform: translate(0, -2px);
   }
 `;
 
@@ -231,7 +163,7 @@ const tierListContainerStyle = css`
 const tierListStyle = css`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
 `;
 
 const searchPanelContainerStyle = css`

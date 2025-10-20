@@ -9,7 +9,7 @@ import { AnimeSearchPanel } from './AnimeSearchPanel';
 import { Header } from '../../../../../../shared/components/Header';
 import { ProfileHeader } from './ProfileHeader';
 
-const initialTiers: TierLevel[] = ['SSS', 'SS', 'S', 'A', 'B', 'C', 'D', 'E'];
+const initialTiers: TierLevel[] = ['SSS', 'SS', 'S', 'A', 'B', 'C'];
 
 interface CreatePageViewProps {
   userId: string;
@@ -86,33 +86,6 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
         <div className={sectionHeaderStyle}>
           <h2 className={sectionTitleStyle}>애니메이션 티어표</h2>
           <div className={sectionActionsStyle}>
-            <div className={viewToggleStyle}>
-              <button className={viewButtonStyle}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="14" width="7" height="7"></rect>
-                  <rect x="3" y="14" width="7" height="7"></rect>
-                </svg>
-              </button>
-              <button className={viewButtonStyle}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="8" y1="6" x2="21" y2="6"></line>
-                  <line x1="8" y1="12" x2="21" y2="12"></line>
-                  <line x1="8" y1="18" x2="21" y2="18"></line>
-                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                </svg>
-              </button>
-              <button className={viewButtonStyle}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="3" y1="12" x2="21" y2="12"></line>
-                  <line x1="3" y1="6" x2="21" y2="6"></line>
-                  <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-              </button>
-            </div>
             <button className={saveButtonStyle} onClick={handleSave}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
@@ -185,34 +158,6 @@ const sectionActionsStyle = css`
   display: flex;
   align-items: center;
   gap: 8px;
-`;
-
-const viewToggleStyle = css`
-  display: flex;
-  gap: 8px;
-`;
-
-const viewButtonStyle = css`
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: #f7f8f9;
-  color: #000000;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-
-  &:hover {
-    background: #dadfe3;
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-  }
 `;
 
 const saveButtonStyle = css`
