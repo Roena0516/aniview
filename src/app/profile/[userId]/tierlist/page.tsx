@@ -12,26 +12,39 @@ const TierListPage: NextPage<TierListPageProps> = async ({ params }) => {
   const { userId } = await params;
   const supabase = await createClient();
 
-  const { data: tierlists, error } = await supabase
-    .from('tierlists')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
+  // 테이블이 없을 경우를 대비한 에러 처리
+  let tierListSummaries = [];
 
-  if (error) {
-    console.error('Error fetching tierlists:', error);
+  try {
+    const { data: tierlists, error } = await supabase
+      .from('tierlists')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching tierlists:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    } else if (tierlists) {
+      console.log('Fetched tierlists:', tierlists.length);
+      tierListSummaries = tierlists.map((tierlist) => ({
+        id: tierlist.id,
+        userId: tierlist.user_id,
+        title: tierlist.title,
+        description: tierlist.description,
+        thumbnail: tierlist.thumbnail,
+        viewCount: tierlist.view_count,
+        createdAt: new Date(tierlist.created_at),
+        updatedAt: new Date(tierlist.updated_at),
+      }));
+    }
+  } catch (error) {
+    console.error('Database error:', error);
   }
-
-  const tierListSummaries = (tierlists || []).map((tierlist) => ({
-    id: tierlist.id,
-    userId: tierlist.user_id,
-    title: tierlist.title,
-    description: tierlist.description,
-    thumbnail: tierlist.thumbnail,
-    viewCount: tierlist.view_count,
-    createdAt: new Date(tierlist.created_at),
-    updatedAt: new Date(tierlist.updated_at),
-  }));
 
   return <TierListGalleryPage userId={userId} tierLists={tierListSummaries} />;
 };

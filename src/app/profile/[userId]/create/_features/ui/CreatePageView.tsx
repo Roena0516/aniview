@@ -8,8 +8,9 @@ import { mockAnimeList } from '../../_entities/model/mockData';
 import { TierRow } from './TierRow';
 import { AnimeSearchPanel } from './AnimeSearchPanel';
 import { Header } from '../../../../../../shared/components/Header';
-import { ProfileHeader } from './ProfileHeader';
+import { ProfileHeader } from '../../../../../../shared/components/ProfileHeader';
 import { tierlistsApi } from '../../../../../../shared/api/tierlists';
+import { useUser } from '../../../../../../shared/hooks/useUser';
 
 const initialTiers: TierLevel[] = ['SSS', 'SS', 'S', 'A', 'B', 'C'];
 
@@ -22,6 +23,7 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
     initialTiers.map((tier) => ({ tier, animes: [] }))
   );
   const [saving, setSaving] = useState(false);
+  const { user } = useUser();
   const router = useRouter();
 
   const usedAnimeIds = new Set(
@@ -62,6 +64,11 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
   };
 
   const handleSave = async () => {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
     if (!window.confirm('티어표를 저장하시겠습니까?')) {
       return;
     }
@@ -70,14 +77,14 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
 
     try {
       const tierlist = await tierlistsApi.createTierlist({
-        user_id: userId,
+        user_id: user.id,
         title: '나의 애니메이션 티어표',
         description: null,
         tiers: tierListItems,
       });
 
       if (tierlist) {
-        router.push(`/profile/${userId}/tierlist/${tierlist.id}`);
+        router.push(`/profile/${user.id}/tierlist/${tierlist.id}`);
       } else {
         alert('티어표 저장에 실패했습니다.');
       }
@@ -92,7 +99,7 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
   return (
     <>
       <Header />
-      <ProfileHeader userId={userId} />
+      <ProfileHeader userId={userId} activePage="create" />
 
       <div className={containerStyle}>
         <div className={sectionHeaderStyle}>

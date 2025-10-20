@@ -10,16 +10,41 @@ import type { Profile } from '../model/database';
 
 interface ProfileHeaderProps {
   userId: string;
+  activePage?: 'tierlist' | 'create';
 }
 
-export function ProfileHeader({ userId }: ProfileHeaderProps) {
+export function ProfileHeader({ userId, activePage = 'tierlist' }: ProfileHeaderProps) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const data = await profilesApi.getProfile(userId);
+      let data = await profilesApi.getProfile(userId);
+
+      // 프로필이 없으면 생성 (Google 로그인 직후)
+      if (!data) {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (user && user.id === userId) {
+          const { data: newProfile, error } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              display_name: user.user_metadata?.full_name || user.email || 'User',
+              avatar_url: user.user_metadata?.avatar_url,
+              username: user.email?.split('@')[0],
+            })
+            .select()
+            .single();
+
+          if (!error && newProfile) {
+            data = newProfile;
+          }
+        }
+      }
+
       setProfile(data);
       setLoading(false);
     };
@@ -108,7 +133,10 @@ export function ProfileHeader({ userId }: ProfileHeaderProps) {
       <div className={spacerMediumStyle} />
 
       <nav className={navButtonsContainerStyle}>
-        <a href={`/profile/${userId}/tierlist`} className={navButtonActiveStyle}>
+        <a
+          href={`/profile/${userId}/tierlist`}
+          className={activePage === 'tierlist' ? navButtonActiveStyle : navButtonStyle}
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="8" y1="6" x2="21" y2="6"></line>
             <line x1="8" y1="12" x2="21" y2="12"></line>
@@ -119,7 +147,10 @@ export function ProfileHeader({ userId }: ProfileHeaderProps) {
           </svg>
           <span>티어표 목록</span>
         </a>
-        <a href={`/profile/${userId}/create`} className={navButtonStyle}>
+        <a
+          href={`/profile/${userId}/create`}
+          className={activePage === 'create' ? navButtonActiveStyle : navButtonStyle}
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 20h9"></path>
             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
