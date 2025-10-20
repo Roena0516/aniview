@@ -22,6 +22,7 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
   const [tierListItems, setTierListItems] = useState<TierListItem[]>(
     initialTiers.map((tier) => ({ tier, animes: [] }))
   );
+  const [title, setTitle] = useState('');
   const [saving, setSaving] = useState(false);
   const { user } = useUser();
   const router = useRouter();
@@ -69,6 +70,11 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
       return;
     }
 
+    if (!title.trim()) {
+      alert('티어표 제목을 입력해주세요.');
+      return;
+    }
+
     if (!window.confirm('티어표를 저장하시겠습니까?')) {
       return;
     }
@@ -78,7 +84,7 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
     try {
       const tierlist = await tierlistsApi.createTierlist({
         user_id: user.id,
-        title: '나의 애니메이션 티어표',
+        title: title.trim(),
         description: null,
         tiers: tierListItems,
       });
@@ -117,6 +123,17 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
               전체 초기화
             </button>
           </div>
+        </div>
+
+        <div className={titleInputContainerStyle}>
+          <input
+            type="text"
+            className={titleInputStyle}
+            placeholder="티어표 제목을 입력하세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            maxLength={100}
+          />
         </div>
 
         <div className={contentStyle}>
@@ -177,6 +194,31 @@ const sectionActionsStyle = css`
   display: flex;
   align-items: center;
   gap: 8px;
+`;
+
+const titleInputContainerStyle = css`
+  margin-bottom: 16px;
+`;
+
+const titleInputStyle = css`
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+  background: #ffffff;
+  border: 1px solid #dddfe0;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: #8a8f95;
+    font-weight: 400;
+  }
+
+  &:focus {
+    border-color: #000000;
+  }
 `;
 
 const saveButtonStyle = css`

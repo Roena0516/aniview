@@ -42,7 +42,7 @@ export function TierListViewPage({ tierList }: TierListViewPageProps) {
             )}
             <div className={metaInfoStyle}>
               <span className={metaItemStyle}>
-                작성자: <b>{tierList.userId}</b>
+                작성자: <b>{tierList.authorName}</b>
               </span>
               <span className={metaDividerStyle}>·</span>
               <span className={metaItemStyle}>

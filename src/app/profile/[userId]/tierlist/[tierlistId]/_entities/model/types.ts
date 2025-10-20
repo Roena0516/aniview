@@ -17,6 +17,7 @@ export interface TierListItem {
 export interface TierListData {
   id: string;
   userId: string;
+  authorName: string;
   title: string;
   description?: string;
   createdAt: Date;
