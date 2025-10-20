@@ -18,6 +18,7 @@ export interface Database {
           favorite_anime: string | null
           rating: number
           tier_list_count: number
+          total_view_count: number
           created_at: string
           updated_at: string
         }
@@ -29,6 +30,7 @@ export interface Database {
           favorite_anime?: string | null
           rating?: number
           tier_list_count?: number
+          total_view_count?: number
           created_at?: string
           updated_at?: string
         }
@@ -40,6 +42,7 @@ export interface Database {
           favorite_anime?: string | null
           rating?: number
           tier_list_count?: number
+          total_view_count?: number
           created_at?: string
           updated_at?: string
         }

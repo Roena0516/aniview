@@ -119,11 +119,6 @@ export function ProfileHeader({ userId, activePage = 'tierlist', tierlistId }: P
                 <span key={i} className={charStyle}>{char}</span>
               ))}
             </h1>
-            <div className={ratingBadgeStyle}>
-              {profile.rating.toString().split('').map((digit, i) => (
-                <span key={i} className={ratingDigitStyle}>{digit}</span>
-              ))}
-            </div>
           </div>
         </div>
       </div>
@@ -137,8 +132,8 @@ export function ProfileHeader({ userId, activePage = 'tierlist', tierlistId }: P
         </div>
         <div className={dividerStyle} />
         <div className={statItemStyle}>
-          <div className={statLabelStyle}>레이팅</div>
-          <div className={statValueStyle}>{profile.rating.toLocaleString('ko-KR')}</div>
+          <div className={statLabelStyle}>총 조회수</div>
+          <div className={statValueStyle}>{profile.total_view_count?.toLocaleString('ko-KR') || 0}</div>
         </div>
       </div>
 
@@ -345,39 +340,6 @@ const charStyle = css`
   flex: 0 0 1em;
   min-width: 0;
   text-align: center;
-`;
-
-const ratingBadgeStyle = css`
-  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-feature-settings: "ss01", "tnum";
-  font-weight: 800;
-  display: inline-flex;
-  width: 4.8em;
-  box-shadow: inset 0 0 0.2em rgba(255, 255, 255, 0.8);
-  padding: 0.2em;
-  border-radius: 0.2em;
-  background-image: linear-gradient(120deg, #7ee2b3, #6bc8fe, #91f37f, #fff127, #ffb75c, #fdb0ac, #ffb75c, #fff127, #91f37f);
-`;
-
-const ratingDigitStyle = css`
-  display: block;
-  flex: 1;
-  min-width: 0;
-  text-align: center;
-  line-height: 1.2;
-  padding: 0.2em 0.1em 0.1em 0.1em;
-  background-image: linear-gradient(to bottom, #585757 70%, #7a7a7a 70%);
-  outline: 1px solid #524d4d;
-  color: #fdea1b;
-  text-shadow: 0 0 0.1em #000;
-
-  &:first-of-type {
-    border-radius: 0.1em 0 0 0.1em;
-  }
-
-  &:last-of-type {
-    border-radius: 0 0.1em 0.1em 0;
-  }
 `;
 
 const statsRowStyle = css`
