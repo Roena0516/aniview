@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { css } from '@emotion/css';
 import { TierLevel, Anime, TierListItem } from '../../_entities/model/types';
@@ -16,20 +16,50 @@ const initialTiers: TierLevel[] = ['SSS', 'SS', 'S', 'A', 'B', 'C'];
 
 interface CreatePageViewProps {
   userId: string;
+  editId?: string;
 }
 
-export function CreatePageView({ userId }: CreatePageViewProps) {
+export function CreatePageView({ userId, editId }: CreatePageViewProps) {
   const [tierListItems, setTierListItems] = useState<TierListItem[]>(
     initialTiers.map((tier) => ({ tier, animes: [] }))
   );
   const [title, setTitle] = useState('');
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { user } = useUser();
   const router = useRouter();
 
   const usedAnimeIds = new Set(
     tierListItems.flatMap((item) => item.animes.map((anime) => anime.id))
   );
+
+  // 수정 모드일 때 기존 데이터 로드
+  useEffect(() => {
+    const loadTierlist = async () => {
+      if (!editId) return;
+
+      setLoading(true);
+
+      try {
+        const tierlist = await tierlistsApi.getTierlist(editId);
+
+        if (tierlist) {
+          setTitle(tierlist.title);
+          setTierListItems(tierlist.tiers as TierListItem[]);
+        } else {
+          alert('티어표를 불러올 수 없습니다.');
+          router.push(`/profile/${userId}/create`);
+        }
+      } catch (error) {
+        console.error('Error loading tierlist:', error);
+        alert('티어표를 불러오는 중 오류가 발생했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTierlist();
+  }, [editId, userId, router]);
 
   const handleDrop = (tier: TierLevel, anime: Anime) => {
     setTierListItems((prev) =>
@@ -75,7 +105,8 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
       return;
     }
 
-    if (!window.confirm('티어표를 저장하시겠습니까?')) {
+    const confirmMessage = editId ? '티어표를 수정하시겠습니까?' : '티어표를 저장하시겠습니까?';
+    if (!window.confirm(confirmMessage)) {
       return;
     }
 
@@ -91,26 +122,51 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
         }
       }
 
-      const tierlist = await tierlistsApi.createTierlist({
-        user_id: user.id,
-        title: title.trim(),
-        description: null,
-        tiers: tierListItems,
-        thumbnail,
-      });
+      let tierlist;
+
+      if (editId) {
+        // 수정 모드
+        tierlist = await tierlistsApi.updateTierlist(editId, {
+          title: title.trim(),
+          description: null,
+          tiers: tierListItems,
+          thumbnail,
+        });
+      } else {
+        // 생성 모드
+        tierlist = await tierlistsApi.createTierlist({
+          user_id: user.id,
+          title: title.trim(),
+          description: null,
+          tiers: tierListItems,
+          thumbnail,
+        });
+      }
 
       if (tierlist) {
         router.push(`/profile/${user.id}/tierlist/${tierlist.id}`);
       } else {
-        alert('티어표 저장에 실패했습니다.');
+        alert(editId ? '티어표 수정에 실패했습니다.' : '티어표 저장에 실패했습니다.');
       }
     } catch (error) {
       console.error('Error saving tierlist:', error);
-      alert('티어표 저장 중 오류가 발생했습니다.');
+      alert(editId ? '티어표 수정 중 오류가 발생했습니다.' : '티어표 저장 중 오류가 발생했습니다.');
     } finally {
       setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <ProfileHeader userId={userId} activePage="create" />
+        <div className={containerStyle}>
+          <div className={loadingStyle}>티어표를 불러오는 중...</div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -119,7 +175,9 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
 
       <div className={containerStyle}>
         <div className={sectionHeaderStyle}>
-          <h2 className={sectionTitleStyle}>애니메이션 티어표</h2>
+          <h2 className={sectionTitleStyle}>
+            {editId ? '애니메이션 티어표 수정' : '애니메이션 티어표'}
+          </h2>
           <div className={sectionActionsStyle}>
             <button className={saveButtonStyle} onClick={handleSave} disabled={saving}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -127,7 +185,7 @@ export function CreatePageView({ userId }: CreatePageViewProps) {
                 <polyline points="17 21 17 13 7 13 7 21"></polyline>
                 <polyline points="7 3 7 8 15 8"></polyline>
               </svg>
-              {saving ? '저장 중...' : '저장하기'}
+              {saving ? (editId ? '수정 중...' : '저장 중...') : (editId ? '수정하기' : '저장하기')}
             </button>
             <button className={clearButtonStyle} onClick={handleClear}>
               전체 초기화
@@ -175,6 +233,15 @@ const containerStyle = css`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
+`;
+
+const loadingStyle = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 16px;
+  font-size: 16px;
+  color: #8a8f95;
 `;
 
 const sectionHeaderStyle = css`

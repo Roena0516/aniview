@@ -104,13 +104,30 @@ export function TierListViewPage({ tierList }: TierListViewPageProps) {
               </svg>
               공유하기
             </button>
-            <a href={`/profile/${tierList.userId}/create`} className={editButtonStyle}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-              </svg>
-              새로 만들기
-            </a>
+            {isOwner && (
+              <>
+                <button className={editButtonStyle} onClick={handleEdit}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  수정하기
+                </button>
+                <button
+                  className={deleteButtonStyle}
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                  {isDeleting ? '삭제 중...' : '삭제하기'}
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -229,25 +246,17 @@ const shareButtonStyle = css`
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  background: #f7f8f9;
+  background: transparent;
   color: #000000;
   border: none;
-  border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease;
   text-decoration: none;
 
   &:hover {
-    background: #dadfe3;
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 4px 8px;
-    transform: translate(0, -4px);
-  }
-
-  &:active {
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 2px 4px;
-    transform: translate(0, -2px);
+    background: #f7f8f9;
   }
 
   svg {
@@ -261,25 +270,46 @@ const editButtonStyle = css`
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  background: #f7f8f9;
+  background: transparent;
   color: #000000;
   border: none;
-  border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease;
   text-decoration: none;
 
   &:hover {
-    background: #dadfe3;
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 4px 8px;
-    transform: translate(0, -4px);
+    background: #f7f8f9;
   }
 
-  &:active {
-    box-shadow: rgba(218, 223, 227, 0.4) 0px 2px 4px;
-    transform: translate(0, -2px);
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const deleteButtonStyle = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: transparent;
+  color: #000000;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+
+  &:hover {
+    background: #f7f8f9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   svg {
@@ -291,16 +321,18 @@ const editButtonStyle = css`
 const tierListContainerStyle = css`
   display: flex;
   flex-direction: column;
-  gap: 8px;
 `;
 
 const tierRowStyle = css`
   display: flex;
   width: 100%;
-  border: 1px solid #dddfe0;
+  border-bottom: 1px solid #dddfe0;
   background: #ffffff;
-  border-radius: 4px;
   overflow: hidden;
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 const tierLabelStyle = (tier: string) => css`
@@ -325,9 +357,8 @@ const emptyStateStyle = css`
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #dddfe0;
-  font-size: 24px;
-  font-weight: 300;
+  color: #8a8f95;
+  font-size: 14px;
 `;
 
 const animeGridStyle = css`
@@ -347,7 +378,6 @@ const thumbnailStyle = css`
   width: 80px;
   height: 107px;
   object-fit: cover;
-  border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
