@@ -249,15 +249,13 @@ const gridCardStyle = css`
   display: flex;
   flex-direction: column;
   background: #ffffff;
+  border: 1px solid #dddfe0;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: #f7f8f9;
     text-decoration: none;
   }
 `;
