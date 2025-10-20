@@ -98,14 +98,19 @@ export function SettingsPageView({ userId }: SettingsPageViewProps) {
 
       <div className={containerStyle}>
         <div className={sectionHeaderStyle}>
-          <h2 className={sectionTitleStyle}>칭호 선택</h2>
-        </div>
+          <div>
+            <h2 className={sectionTitleStyle}>칭호 선택</h2>
+            <div className={descriptionStyle}>
+              프로필에 표시될 칭호를 선택하세요. 클릭하면 자동으로 저장됩니다.
+              {saving && <span> (저장 중...)</span>}
+            </div>
+          </div>
 
-        <div className={spacerStyle} />
-
-        <div className={descriptionStyle}>
-          프로필에 표시될 칭호를 선택하세요. 클릭하면 자동으로 저장됩니다.
-          {saving && <span> (저장 중...)</span>}
+          {selectedTitle && (
+            <button className={removeButtonStyle} onClick={handleRemoveTitle} disabled={saving}>
+              칭호 제거
+            </button>
+          )}
         </div>
 
         <div className={spacerStyle} />
@@ -122,16 +127,6 @@ export function SettingsPageView({ userId }: SettingsPageViewProps) {
             </button>
           ))}
         </div>
-
-        <div className={spacerStyle} />
-
-        {selectedTitle && (
-          <div className={removeButtonContainerStyle}>
-            <button className={removeButtonStyle} onClick={handleRemoveTitle} disabled={saving}>
-              칭호 제거
-            </button>
-          </div>
-        )}
       </div>
     </>
   );
@@ -151,14 +146,14 @@ const spacerStyle = css`
 
 const sectionHeaderStyle = css`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 16px;
-  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #dddfe0;
+  gap: 24px;
 
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     flex-direction: column;
-    align-items: flex-start;
   }
 `;
 
@@ -224,27 +219,28 @@ const titleCardActiveStyle = css`
   }
 `;
 
-const removeButtonContainerStyle = css`
-  display: flex;
-  justify-content: center;
-`;
-
 const removeButtonStyle = css`
   padding: 12px 16px;
-  background: #f7f8f9;
+  background: transparent;
   color: #000000;
   border: none;
+  border-radius: 0;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  flex-shrink: 0;
 
   &:hover {
-    background: #dadfe3;
+    background: #f7f8f9;
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
