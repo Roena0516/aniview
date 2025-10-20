@@ -66,7 +66,7 @@ export function GalleryPage({ tierlists }: GalleryPageProps) {
                   <p className={cardDescriptionStyle}>{tierlist.description}</p>
                 )}
                 <div className={cardMetaStyle}>
-                  <span className={authorStyle}>@{tierlist.userId}</span>
+                  <span className={authorStyle}>@{tierlist.authorName}</span>
                   <span className={dotStyle}>·</span>
                   <span className={dateStyle}>
                     {tierlist.createdAt.toLocaleDateString('ko-KR')}

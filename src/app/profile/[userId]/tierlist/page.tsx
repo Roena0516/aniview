@@ -12,7 +12,7 @@ const TierListPage: NextPage<TierListPageProps> = async ({ params }) => {
   const { userId } = await params;
   const supabase = await createClient();
 
-  // 테이블이 없을 경우를 대비한 에러 처리
+  // 티어리스트 목록 조회
   let tierListSummaries = [];
 
   try {
@@ -36,7 +36,7 @@ const TierListPage: NextPage<TierListPageProps> = async ({ params }) => {
         userId: tierlist.user_id,
         title: tierlist.title,
         description: tierlist.description,
-        thumbnail: tierlist.thumbnail,
+        thumbnail: tierlist.thumbnail || '/placeholder-thumbnail.png',
         viewCount: tierlist.view_count,
         createdAt: new Date(tierlist.created_at),
         updatedAt: new Date(tierlist.updated_at),
