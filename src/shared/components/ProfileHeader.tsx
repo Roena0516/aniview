@@ -5,6 +5,7 @@ import { css } from '@emotion/css';
 import Link from 'next/link';
 import { createClient } from '../lib/supabase/client';
 import { profilesApi } from '../api/profiles';
+import { useUser } from '../hooks/useUser';
 import type { Profile } from '../model/database';
 
 interface ProfileHeaderProps {
@@ -16,6 +17,9 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ userId, activePage = 'tierlist', tierlistId }: ProfileHeaderProps) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useUser();
+
+  const isOwner = user?.id === userId;
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -139,7 +143,7 @@ export function ProfileHeader({ userId, activePage = 'tierlist', tierlistId }: P
 
       <div className={spacerMediumStyle} />
 
-      <nav className={tierlistId ? navButtonsContainerStyleWithPhoto : navButtonsContainerStyle}>
+      <nav className={tierlistId && isOwner ? navButtonsContainerStyleWithPhoto : navButtonsContainerStyle}>
         <a
           href={`/profile/${userId}/tierlist`}
           className={activePage === 'tierlist' ? navButtonActiveStyle : navButtonStyle}
@@ -154,17 +158,19 @@ export function ProfileHeader({ userId, activePage = 'tierlist', tierlistId }: P
           </svg>
           <span>티어표 목록</span>
         </a>
-        <a
-          href={`/profile/${userId}/create`}
-          className={activePage === 'create' ? navButtonActiveStyle : navButtonStyle}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 20h9"></path>
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-          </svg>
-          <span>티어표 생성</span>
-        </a>
-        {tierlistId && (
+        {isOwner && (
+          <a
+            href={`/profile/${userId}/create`}
+            className={activePage === 'create' ? navButtonActiveStyle : navButtonStyle}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            <span>티어표 생성</span>
+          </a>
+        )}
+        {tierlistId && isOwner && (
           <a
             href={`/profile/${userId}/tierlist/${tierlistId}/photo`}
             className={activePage === 'photo' ? navButtonActiveStyle : navButtonStyle}
@@ -177,16 +183,18 @@ export function ProfileHeader({ userId, activePage = 'tierlist', tierlistId }: P
             <span>사진관</span>
           </a>
         )}
-        <a
-          href={`/profile/${userId}/settings`}
-          className={activePage === 'settings' ? navButtonActiveStyle : navButtonStyle}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          <span>칭호 선택</span>
-        </a>
+        {isOwner && (
+          <a
+            href={`/profile/${userId}/settings`}
+            className={activePage === 'settings' ? navButtonActiveStyle : navButtonStyle}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span>칭호 선택</span>
+          </a>
+        )}
       </nav>
 
       <div className={spacerSmallStyle} />
