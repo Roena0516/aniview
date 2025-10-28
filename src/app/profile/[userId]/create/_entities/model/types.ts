@@ -7,6 +7,7 @@ export interface Anime {
   thumbnail: string;
   year?: number;
   season?: string;
+  genres?: string[];
 }
 
 export interface TierListItem {

@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import { css } from '@emotion/css';
 import type { Json } from '../../../../../../shared/model/database';
 import { TierLevel, Anime, TierListItem } from '../../_entities/model/types';
-import { mockAnimeList } from '../../_entities/model/mockData';
 import { TierRow } from './TierRow';
 import { AnimeSearchPanel } from './AnimeSearchPanel';
 import { Header } from '../../../../../../shared/components/Header';
 import { ProfileHeader } from '../../../../../../shared/components/ProfileHeader';
 import { tierlistsApi } from '../../../../../../shared/api/tierlists';
 import { useUser } from '../../../../../../shared/hooks/useUser';
+import { animesApi } from '../../../../../../shared/api/animes';
 
 const initialTiers: TierLevel[] = ['SSS', 'SS', 'S', 'A', 'B', 'C'];
 
@@ -27,12 +27,26 @@ export function CreatePageView({ userId, editId }: CreatePageViewProps) {
   const [title, setTitle] = useState('');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [animeList, setAnimeList] = useState<Anime[]>([]);
+  const [loadingAnimes, setLoadingAnimes] = useState(true);
   const { user } = useUser();
   const router = useRouter();
 
   const usedAnimeIds = new Set(
     tierListItems.flatMap((item) => item.animes.map((anime) => anime.id))
   );
+
+  // 애니메이션 목록 불러오기
+  useEffect(() => {
+    const fetchAnimes = async () => {
+      setLoadingAnimes(true);
+      const animes = await animesApi.getInitialAnimes(100);
+      setAnimeList(animes);
+      setLoadingAnimes(false);
+    };
+
+    fetchAnimes();
+  }, []);
 
   // 수정 모드일 때 기존 데이터 로드
   useEffect(() => {
@@ -221,7 +235,13 @@ export function CreatePageView({ userId, editId }: CreatePageViewProps) {
           </div>
 
           <div className={searchPanelContainerStyle}>
-            <AnimeSearchPanel animes={mockAnimeList} usedAnimeIds={usedAnimeIds} />
+            {loadingAnimes ? (
+              <div className={loadingContainerStyle}>
+                <div className={loadingTextStyle}>애니메이션 목록을 불러오는 중...</div>
+              </div>
+            ) : (
+              <AnimeSearchPanel animes={animeList} usedAnimeIds={usedAnimeIds} />
+            )}
           </div>
         </div>
       </div>
@@ -363,4 +383,20 @@ const searchPanelContainerStyle = css`
   @media (max-width: 1024px) {
     flex: 1;
   }
+`;
+
+const loadingContainerStyle = css`
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #dddfe0;
+  border-radius: 4px;
+  padding: 60px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const loadingTextStyle = css`
+  color: #8a8f95;
+  font-size: 14px;
 `;
