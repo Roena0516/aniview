@@ -11,7 +11,6 @@ import { Header } from '../../../../../../shared/components/Header';
 import { ProfileHeader } from '../../../../../../shared/components/ProfileHeader';
 import { tierlistsApi } from '../../../../../../shared/api/tierlists';
 import { useUser } from '../../../../../../shared/hooks/useUser';
-import { animesApi } from '../../../../../../shared/api/animes';
 
 const initialTiers: TierLevel[] = ['SSS', 'SS', 'S', 'A', 'B', 'C'];
 
@@ -27,26 +26,12 @@ export function CreatePageView({ userId, editId }: CreatePageViewProps) {
   const [title, setTitle] = useState('');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [animeList, setAnimeList] = useState<Anime[]>([]);
-  const [loadingAnimes, setLoadingAnimes] = useState(true);
   const { user } = useUser();
   const router = useRouter();
 
   const usedAnimeIds = new Set(
     tierListItems.flatMap((item) => item.animes.map((anime) => anime.id))
   );
-
-  // 애니메이션 목록 불러오기
-  useEffect(() => {
-    const fetchAnimes = async () => {
-      setLoadingAnimes(true);
-      const animes = await animesApi.getInitialAnimes(100);
-      setAnimeList(animes);
-      setLoadingAnimes(false);
-    };
-
-    fetchAnimes();
-  }, []);
 
   // 수정 모드일 때 기존 데이터 로드
   useEffect(() => {
@@ -235,13 +220,7 @@ export function CreatePageView({ userId, editId }: CreatePageViewProps) {
           </div>
 
           <div className={searchPanelContainerStyle}>
-            {loadingAnimes ? (
-              <div className={loadingContainerStyle}>
-                <div className={loadingTextStyle}>애니메이션 목록을 불러오는 중...</div>
-              </div>
-            ) : (
-              <AnimeSearchPanel animes={animeList} usedAnimeIds={usedAnimeIds} />
-            )}
+            <AnimeSearchPanel usedAnimeIds={usedAnimeIds} />
           </div>
         </div>
       </div>

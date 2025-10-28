@@ -1,16 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { css } from '@emotion/css';
 import { Anime } from '../../_entities/model/types';
+import { animesApi } from '../../../../../../shared/api/animes';
 
 interface AnimeSearchPanelProps {
-  animes: Anime[];
   usedAnimeIds: Set<string>;
 }
 
-export function AnimeSearchPanel({ animes, usedAnimeIds }: AnimeSearchPanelProps) {
+export function AnimeSearchPanel({ usedAnimeIds }: AnimeSearchPanelProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [animes, setAnimes] = useState<Anime[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchAnimes = useCallback(async (keyword: string) => {
+    setLoading(true);
+    try {
+      const result = keyword.trim()
+        ? await animesApi.searchAnimes(keyword, 50)
+        : await animesApi.getAnimes({ size: 50 });
+      setAnimes(result.animes);
+    } catch (error) {
+      console.error('Error fetching animes:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchAnimes(searchTerm);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm, fetchAnimes]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -21,13 +45,7 @@ export function AnimeSearchPanel({ animes, usedAnimeIds }: AnimeSearchPanelProps
     e.dataTransfer.effectAllowed = 'copy';
   };
 
-  const filteredAnimes = animes.filter((anime) => {
-    const isUsed = usedAnimeIds.has(anime.id);
-    const matchesSearch =
-      anime.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      anime.titleJa?.toLowerCase().includes(searchTerm.toLowerCase());
-    return !isUsed && matchesSearch;
-  });
+  const filteredAnimes = animes.filter((anime) => !usedAnimeIds.has(anime.id));
 
   return (
     <div className={containerStyle}>
@@ -42,7 +60,9 @@ export function AnimeSearchPanel({ animes, usedAnimeIds }: AnimeSearchPanelProps
         />
       </div>
       <div className={animeListStyle}>
-        {filteredAnimes.length === 0 ? (
+        {loading ? (
+          <div className={emptyStateStyle}>검색 중...</div>
+        ) : filteredAnimes.length === 0 ? (
           <div className={emptyStateStyle}>
             {searchTerm ? '검색 결과가 없습니다' : '모든 애니메이션이 사용되었습니다'}
           </div>

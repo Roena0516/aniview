@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { css } from "@emotion/css";
 import { TierLevel, Anime, TierListItem } from "../../_entities/model/types";
 import { TierRow } from "./TierRow";
 import { AnimeSearchPanel } from "./AnimeSearchPanel";
 import { Header } from "../../../../shared/components/Header";
 import { ProfileHeader } from "./ProfileHeader";
-import { animesApi } from "../../../../shared/api/animes";
 
 const initialTiers: TierLevel[] = ["SSS", "SS", "S", "A", "B", "C"];
 
@@ -15,20 +14,6 @@ export function CreatePageView() {
   const [tierListItems, setTierListItems] = useState<TierListItem[]>(
     initialTiers.map((tier) => ({ tier, animes: [] }))
   );
-  const [animeList, setAnimeList] = useState<Anime[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // 애니메이션 목록 불러오기
-  useEffect(() => {
-    const fetchAnimes = async () => {
-      setLoading(true);
-      const animes = await animesApi.getInitialAnimes(100);
-      setAnimeList(animes);
-      setLoading(false);
-    };
-
-    fetchAnimes();
-  }, []);
 
   const usedAnimeIds = new Set(
     tierListItems.flatMap((item) => item.animes.map((anime) => anime.id))
@@ -98,16 +83,7 @@ export function CreatePageView() {
           </div>
 
           <div className={searchPanelContainerStyle}>
-            {loading ? (
-              <div className={loadingContainerStyle}>
-                <div className={loadingTextStyle}>애니메이션 목록을 불러오는 중...</div>
-              </div>
-            ) : (
-              <AnimeSearchPanel
-                animes={animeList}
-                usedAnimeIds={usedAnimeIds}
-              />
-            )}
+            <AnimeSearchPanel usedAnimeIds={usedAnimeIds} />
           </div>
         </div>
       </div>

@@ -1,23 +1,21 @@
 import axios from 'axios';
 
-const ANIME_API_BASE_URL = 'https://prod.windeath44.wiki/api';
+const ANIME_API_BASE_URL = 'https://api.laftel.net/api/search/v3';
 
 /**
- * 애니메이션 API 응답 타입
+ * Laftel API 응답 타입
  */
-export interface AnimeApiResponse {
-  animeId: number;
+export interface LaftelAnimeResponse {
+  id: number;
   name: string;
+  img: string;
   genres: string[];
-  imageUrl: string;
 }
 
-export interface AnimesResponse {
-  message: string;
-  data: {
-    values: AnimeApiResponse[];
-    hasNext: boolean;
-  };
+export interface LaftelSearchResponse {
+  count: number;
+  results: LaftelAnimeResponse[];
+  next: string | null;
 }
 
 /**
@@ -36,43 +34,68 @@ export interface Anime {
 /**
  * API 응답을 프로젝트 타입으로 변환
  */
-function transformAnimeResponse(apiAnime: AnimeApiResponse): Anime {
+function transformAnimeResponse(apiAnime: LaftelAnimeResponse): Anime {
   return {
-    id: apiAnime.animeId.toString(),
+    id: apiAnime.id.toString(),
     title: apiAnime.name,
-    thumbnail: apiAnime.imageUrl,
+    thumbnail: apiAnime.img,
     genres: apiAnime.genres,
   };
 }
 
 export const animesApi = {
   /**
-   * 애니메이션 목록 조회
-   * @param size 가져올 개수 (required)
-   * @param cursorId 커서 ID (optional)
-   * @param name 애니메이션 이름으로 검색 (optional)
+   * 애니메이션 목록 조회 (Laftel API)
+   * @param size 가져올 개수
+   * @param offset 페이지 오프셋
+   * @param keyword 검색 키워드
    */
   async getAnimes(params: {
     size: number;
-    cursorId?: number;
-    name?: string;
+    offset?: number;
+    keyword?: string;
   }): Promise<{ animes: Anime[]; hasNext: boolean }> {
     try {
-      const response = await axios.get<AnimesResponse>(
-        `${ANIME_API_BASE_URL}/animes`,
-        {
-          params: {
-            size: params.size,
-            ...(params.cursorId && { cursorId: params.cursorId }),
-            ...(params.name && { name: params.name }),
-          },
-        }
-      );
+      const hasKeyword = params.keyword && params.keyword.trim() !== '';
 
-      return {
-        animes: response.data.data.values.map(transformAnimeResponse),
-        hasNext: response.data.data.hasNext,
-      };
+      // keyword가 있으면 검색 API, 없으면 discover API 사용
+      if (hasKeyword) {
+        // 검색 API
+        const response = await axios.get<LaftelSearchResponse>(
+          `${ANIME_API_BASE_URL}/keyword/`,
+          {
+            params: {
+              keyword: params.keyword,
+              viewing_only: true,
+              offset: params.offset || 0,
+              size: params.size,
+            },
+          }
+        );
+
+        return {
+          animes: response.data.results.map(transformAnimeResponse),
+          hasNext: response.data.next !== null,
+        };
+      } else {
+        // 전체 목록 API (rank 정렬)
+        const response = await axios.get<LaftelSearchResponse>(
+          'https://api.laftel.net/api/search/v1/discover/',
+          {
+            params: {
+              sort: 'rank',
+              viewable: true,
+              offset: params.offset || 0,
+              size: params.size,
+            },
+          }
+        );
+
+        return {
+          animes: response.data.results.map(transformAnimeResponse),
+          hasNext: response.data.next !== null,
+        };
+      }
     } catch (error) {
       console.error('Error fetching animes:', error);
       return {
@@ -87,11 +110,13 @@ export const animesApi = {
    */
   async searchAnimes(
     searchQuery: string,
-    size: number = 20
+    size: number = 20,
+    offset: number = 0
   ): Promise<{ animes: Anime[]; hasNext: boolean }> {
     return this.getAnimes({
       size,
-      name: searchQuery,
+      offset,
+      keyword: searchQuery,
     });
   },
 
