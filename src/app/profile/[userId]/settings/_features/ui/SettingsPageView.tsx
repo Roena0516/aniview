@@ -15,14 +15,12 @@ interface SettingsPageViewProps {
 export function SettingsPageView({ userId }: SettingsPageViewProps) {
   const { user } = useUser();
   const [selectedTitle, setSelectedTitle] = useState<string | null>(null);
-  const [currentTitle, setCurrentTitle] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const loadCurrentTitle = async () => {
       const profile = await profilesApi.getProfile(userId);
       if (profile) {
-        setCurrentTitle(profile.favorite_anime || null);
         setSelectedTitle(profile.favorite_anime || null);
       }
     };
@@ -47,8 +45,6 @@ export function SettingsPageView({ userId }: SettingsPageViewProps) {
       await profilesApi.updateProfile(userId, {
         favorite_anime: title,
       });
-
-      setCurrentTitle(title);
 
       // ProfileHeader에 칭호 변경 이벤트 전달
       window.dispatchEvent(new CustomEvent('titleUpdated', { detail: { title } }));
@@ -78,8 +74,6 @@ export function SettingsPageView({ userId }: SettingsPageViewProps) {
       await profilesApi.updateProfile(userId, {
         favorite_anime: null,
       });
-
-      setCurrentTitle(null);
 
       // ProfileHeader에 칭호 제거 이벤트 전달
       window.dispatchEvent(new CustomEvent('titleUpdated', { detail: { title: null } }));

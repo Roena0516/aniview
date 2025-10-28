@@ -4,6 +4,7 @@ export const mockGalleryData: TierListSummary[] = [
   {
     id: 'sample-tierlist-1',
     userId: 'guest',
+    authorName: 'Guest User',
     title: '2024년 최고의 애니메이션',
     description: '개인적으로 선정한 2024년 최고의 애니메이션 작품들',
     thumbnail: 'https://placehold.co/400x300/2a3a5a/white?text=2024+Best',
@@ -14,6 +15,7 @@ export const mockGalleryData: TierListSummary[] = [
   {
     id: 'tierlist-2',
     userId: 'anime_lover',
+    authorName: 'Anime Lover',
     title: '이세계물 애니 순위',
     description: '가장 재미있게 본 이세계 전생 애니메이션',
     thumbnail: 'https://placehold.co/400x300/4a2a3a/white?text=Isekai',
@@ -24,6 +26,7 @@ export const mockGalleryData: TierListSummary[] = [
   {
     id: 'tierlist-3',
     userId: 'otaku_master',
+    authorName: 'Otaku Master',
     title: '액션 애니메이션 티어표',
     description: '박진감 넘치는 액션 애니 모음',
     thumbnail: 'https://placehold.co/400x300/4a1a2a/white?text=Action',
@@ -34,6 +37,7 @@ export const mockGalleryData: TierListSummary[] = [
   {
     id: 'tierlist-4',
     userId: 'slice_of_life',
+    authorName: 'Slice of Life',
     title: '힐링 일상물 추천',
     description: '마음이 따뜻해지는 일상 애니',
     thumbnail: 'https://placehold.co/400x300/2a5a3a/white?text=Healing',
@@ -44,6 +48,7 @@ export const mockGalleryData: TierListSummary[] = [
   {
     id: 'tierlist-5',
     userId: 'mecha_fan',
+    authorName: 'Mecha Fan',
     title: '로봇 애니메이션 랭킹',
     description: '역대 최고의 메카닉 애니메이션',
     thumbnail: 'https://placehold.co/400x300/1a3a4a/white?text=Mecha',
@@ -54,6 +59,7 @@ export const mockGalleryData: TierListSummary[] = [
   {
     id: 'tierlist-6',
     userId: 'romance_queen',
+    authorName: 'Romance Queen',
     title: '로맨스 애니 BEST',
     description: '심장이 두근거리는 로맨스 작품들',
     thumbnail: 'https://placehold.co/400x300/d7bde2/white?text=Romance',

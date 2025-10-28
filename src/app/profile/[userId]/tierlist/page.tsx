@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 import { TierListGalleryPage } from './_features/ui/TierListGalleryPage';
 import { createClient } from '../../../../shared/lib/supabase/server';
+import type { TierListSummary } from './_entities/model/types';
 
 interface TierListPageProps {
   params: Promise<{
@@ -13,7 +14,7 @@ const TierListPage: NextPage<TierListPageProps> = async ({ params }) => {
   const supabase = await createClient();
 
   // 티어리스트 목록 조회
-  let tierListSummaries = [];
+  let tierListSummaries: TierListSummary[] = [];
 
   try {
     const { data: tierlists, error } = await supabase
@@ -34,12 +35,14 @@ const TierListPage: NextPage<TierListPageProps> = async ({ params }) => {
       tierListSummaries = tierlists.map((tierlist) => ({
         id: tierlist.id,
         userId: tierlist.user_id,
+        authorName: 'Unknown', // Will be fetched from profile in real implementation
         title: tierlist.title,
         description: tierlist.description,
         thumbnail: tierlist.thumbnail || '/placeholder-thumbnail.png',
         viewCount: tierlist.view_count,
         createdAt: new Date(tierlist.created_at),
         updatedAt: new Date(tierlist.updated_at),
+        animeCount: 0, // Will be calculated from tiers in real implementation
       }));
     }
   } catch (error) {

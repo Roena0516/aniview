@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { css } from '@emotion/css';
+import type { Json } from '../../../../../../shared/model/database';
 import { TierLevel, Anime, TierListItem } from '../../_entities/model/types';
 import { mockAnimeList } from '../../_entities/model/mockData';
 import { TierRow } from './TierRow';
@@ -45,7 +46,7 @@ export function CreatePageView({ userId, editId }: CreatePageViewProps) {
 
         if (tierlist) {
           setTitle(tierlist.title);
-          setTierListItems(tierlist.tiers as TierListItem[]);
+          setTierListItems(tierlist.tiers as unknown as TierListItem[]);
         } else {
           alert('티어표를 불러올 수 없습니다.');
           router.push(`/profile/${userId}/create`);
@@ -129,7 +130,7 @@ export function CreatePageView({ userId, editId }: CreatePageViewProps) {
         tierlist = await tierlistsApi.updateTierlist(editId, {
           title: title.trim(),
           description: null,
-          tiers: tierListItems,
+          tiers: tierListItems as unknown as Json,
           thumbnail,
         });
       } else {
@@ -138,7 +139,7 @@ export function CreatePageView({ userId, editId }: CreatePageViewProps) {
           user_id: user.id,
           title: title.trim(),
           description: null,
-          tiers: tierListItems,
+          tiers: tierListItems as unknown as Json,
           thumbnail,
         });
       }

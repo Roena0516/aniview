@@ -11,7 +11,7 @@ interface PhotoPageProps {
 }
 
 const PhotoPage: NextPage<PhotoPageProps> = async ({ params }) => {
-  const { userId, tierlistId } = await params;
+  const { tierlistId } = await params;
   const supabase = await createClient();
 
   const { data: tierlist, error } = await supabase
@@ -41,6 +41,7 @@ const PhotoPage: NextPage<PhotoPageProps> = async ({ params }) => {
     viewCount: tierlist.view_count,
     createdAt: new Date(tierlist.created_at),
     updatedAt: new Date(tierlist.updated_at),
+    isPublic: tierlist.is_public ?? true,
   };
 
   return <PhotoGalleryPage tierList={tierListData} />;

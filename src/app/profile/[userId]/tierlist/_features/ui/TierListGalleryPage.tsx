@@ -102,9 +102,6 @@ export function TierListGalleryPage({ userId, tierLists }: TierListGalleryPagePr
                         />
                       )}
                     </div>
-                    <div className={listDateBadgeStyle}>
-                      {tierList.createdAt.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' })}
-                    </div>
                     <div className={listCardContentStyle}>
                       <h3 className={listCardTitleStyle}>{tierList.title}</h3>
                       {tierList.description && (
@@ -112,6 +109,9 @@ export function TierListGalleryPage({ userId, tierLists }: TierListGalleryPagePr
                       )}
                     </div>
                     <div className={listCardMetaStyle}>
+                      <div className={listDateBadgeStyle}>
+                        {tierList.createdAt.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' })}
+                      </div>
                       <div className={listViewBadgeStyle}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -134,13 +134,13 @@ export function TierListGalleryPage({ userId, tierLists }: TierListGalleryPagePr
                     className={tableRowStyle}
                   >
                     <div className={tableRankStyle}>{index + 1}</div>
-                    <div className={tableDateBadgeStyle}>
-                      {tierList.createdAt.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' })}
-                    </div>
                     <div className={tableContentStyle}>
                       <h3 className={tableCardTitleStyle}>{tierList.title}</h3>
                     </div>
                     <div className={tableMetaStyle}>
+                      <div className={tableDateBadgeStyle}>
+                        {tierList.createdAt.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' })}
+                      </div>
                       <div className={tableViewBadgeStyle}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -287,6 +287,7 @@ const gridOverlayTopStyle = css`
 const gridViewCountBadgeStyle = css`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 4px;
   padding: 4px 8px;
   background: rgba(255, 255, 255, 0.95);
@@ -294,10 +295,12 @@ const gridViewCountBadgeStyle = css`
   font-weight: 600;
   color: #000000;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  min-width: 70px;
 
   svg {
     width: 12px;
     height: 12px;
+    flex-shrink: 0;
   }
 `;
 
@@ -396,17 +399,17 @@ const listThumbnailStyle = css`
 
 const listDateBadgeStyle = css`
   flex: 0 0 auto;
-  padding: 8px 12px;
-  background: #b39ddb;
-  font-size: 18px;
-  font-weight: 800;
-  color: #ffffff;
+  padding: 4px 8px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8a8f95;
   text-align: center;
   line-height: 1;
 
   @media (max-width: 768px) {
-    font-size: 16px;
-    padding: 6px 10px;
+    font-size: 12px;
+    padding: 4px 6px;
   }
 `;
 
@@ -453,16 +456,17 @@ const listCardMetaStyle = css`
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 
   @media (max-width: 768px) {
-    margin-left: 90px;
+    margin-left: 72px;
   }
 `;
 
 const listViewBadgeStyle = css`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 4px;
   padding: 4px 8px;
   background: #ffffff;
@@ -470,10 +474,12 @@ const listViewBadgeStyle = css`
   font-size: 11px;
   font-weight: 600;
   color: #666666;
+  min-width: 80px;
 
   svg {
     width: 11px;
     height: 11px;
+    flex-shrink: 0;
   }
 `;
 
@@ -526,17 +532,17 @@ const tableRankStyle = css`
 
 const tableDateBadgeStyle = css`
   flex: 0 0 auto;
-  padding: 6px 10px;
-  background: #b39ddb;
-  font-size: 15px;
-  font-weight: 800;
-  color: #ffffff;
+  padding: 4px 8px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8a8f95;
   text-align: center;
   line-height: 1;
 
   @media (max-width: 768px) {
-    font-size: 13px;
-    padding: 4px 8px;
+    font-size: 11px;
+    padding: 4px 6px;
   }
 `;
 
@@ -570,16 +576,17 @@ const tableMetaStyle = css`
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 
   @media (max-width: 768px) {
-    margin-left: 54px;
+    margin-left: 28px;
   }
 `;
 
 const tableViewBadgeStyle = css`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 4px;
   padding: 4px 8px;
   background: #ffffff;
@@ -587,10 +594,12 @@ const tableViewBadgeStyle = css`
   font-size: 11px;
   font-weight: 600;
   color: #666666;
+  min-width: 80px;
 
   svg {
     width: 11px;
     height: 11px;
+    flex-shrink: 0;
   }
 `;
 

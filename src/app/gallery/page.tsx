@@ -26,7 +26,7 @@ const Gallery: NextPage = async () => {
   const tierListSummaries: TierListSummary[] = (tierlists || []).map((tierlist) => {
     // tiers 배열에서 모든 애니메이션 개수 계산
     const animeCount = Array.isArray(tierlist.tiers)
-      ? tierlist.tiers.reduce((sum, tier) => sum + (tier.animes?.length || 0), 0)
+      ? tierlist.tiers.reduce((sum: number, tier: Record<string, unknown>) => sum + ((tier.animes as unknown[] | undefined)?.length || 0), 0)
       : 0;
 
     return {

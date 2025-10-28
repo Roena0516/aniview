@@ -3,6 +3,7 @@ import { TierListData } from './types';
 export const mockTierListData: TierListData = {
   id: 'sample-tierlist-1',
   userId: 'guest',
+  authorName: 'Guest User',
   title: '2024년 최고의 애니메이션',
   description: '개인적으로 선정한 2024년 최고의 애니메이션 작품들',
   createdAt: new Date('2024-12-01'),

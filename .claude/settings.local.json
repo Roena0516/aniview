@@ -4,7 +4,8 @@
       "Bash(mkdir -p src/app/create/_features/ui src/app/create/_entities/model src/shared/components)",
       "Bash(npm run dev)",
       "WebFetch(domain:maimai.shiftpsh.com)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

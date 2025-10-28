@@ -11,7 +11,7 @@ interface TierListPageProps {
 }
 
 const TierListPage: NextPage<TierListPageProps> = async ({ params }) => {
-  const { userId, tierlistId } = await params;
+  const { tierlistId } = await params;
   const supabase = await createClient();
 
   // Supabase에서 티어표 데이터 가져오기
@@ -46,6 +46,7 @@ const TierListPage: NextPage<TierListPageProps> = async ({ params }) => {
     viewCount: tierlist.view_count,
     createdAt: new Date(tierlist.created_at),
     updatedAt: new Date(tierlist.updated_at),
+    isPublic: tierlist.is_public ?? true,
   };
 
   return <TierListViewPage tierList={tierListData} />;
